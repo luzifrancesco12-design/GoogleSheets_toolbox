@@ -7,7 +7,8 @@ package-lock.json
 
 # File di configurazione locale di Clasp
 # Scommenta la riga sotto se vuoi evitare di condividere lo scriptId univoco
-# .clasp.json
+.clasp.json
+.claspignore 
 
 # Credenziali e dati sensibili
 .env
