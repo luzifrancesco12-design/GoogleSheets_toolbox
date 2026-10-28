@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body { font-family: Arial, sans-serif; padding: 15px; color: #333; }
+      label { display: block; margin-top: 12px; font-weight: bold; font-size: 12px; color: #3c4043; }
+      
+      input[type="text"], textarea { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; border: 1px solid #dadce0; border-radius: 4px; font-family: Arial, sans-serif; font-size: 13px; }
+      input[type="text"]:focus, textarea:focus { border-color: #1a73e8; outline: none; }
+      textarea { resize: vertical; height: 75px; }
+      
+      input[type="color"] { width: 100%; height: 35px; border: none; cursor: pointer; margin-top: 5px; background: none; }
+      
+      /* Stile Toggle Tab (Lab / Generale) */
+      .mode-toggle { display: flex; border: 1px solid #dadce0; border-radius: 6px; overflow: hidden; margin-bottom: 5px; }
+      .mode-btn { flex: 1; padding: 8px 0; text-align: center; background: #f8f9fa; cursor: pointer; font-weight: bold; font-size: 13px; color: #5f6368; transition: all 0.2s; user-select: none; }
+      .mode-btn.active { background: #1a73e8; color: white; }
+
+      /* Griglia checkbox pulita e compatta */
+      .checkbox-group { margin-top: 6px; border: 1px solid #dadce0; padding: 10px; border-radius: 6px; background: #fafafa; max-height: 130px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      .checkbox-item { font-size: 12px; cursor: pointer; display: flex; align-items: center; user-select: none; }
+      .checkbox-item input { margin-right: 6px; cursor: pointer; }
+      
+      /* Fix layout input + bottone aggiunta custom */
+      .add-custom-wrapper { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+      .add-custom-wrapper input[type="text"] { flex: 1; width: auto; margin-top: 0; }
+      .btn-add { background: #5f6368; color: white; border: none; padding: 8px 14px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; white-space: nowrap; height: 35px; }
+      .btn-add:hover { background: #3c4043; }
+
+      button.btn-primary { background: #1a73e8; color: white; border: none; padding: 10px 15px; margin-top: 20px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px; }
+      button.btn-primary:hover { background: #1557b0; }
+
+      .row-selector-container { display: flex; gap: 10px; margin-top: 5px; }
+      .row-box { flex: 1; border: 2px solid #dadce0; border-radius: 6px; text-align: center; padding: 8px 0; cursor: pointer; font-weight: 500; color: #3c4043; transition: all 0.2s ease; user-select: none; font-size: 13px; }
+      .row-box input[type="radio"] { display: none; }
+      .row-box:hover { border-color: #1a73e8; background-color: #f8f9fa; }
+      .row-box input[type="radio"]:checked + span { color: #1a73e8; }
+      .row-box:has(input[type="radio"]:checked) { border-color: #1a73e8; background-color: #e8f0fe; }
+      
+      .hidden { display: none; }
+    </style>
+  </head>
+  <body>
+    <!-- Selettore Modalità -->
+    <div class="mode-toggle">
+      <div id="btnLab" class="mode-btn active" onclick="setMode('lab')">Lab</div>
+      <div id="btnGen" class="mode-btn" onclick="setMode('gen')">Generale</div>
+    </div>
+
+    <label for="titolo">Titolo della Sottotabella:</label>
+    <input type="text" id="titolo" value="Misure Sperimentali">
+
+    <!-- Sezione Lab (Checkbox predefinite + aggiunta manuale) -->
+    <div id="sectionLab">
+      <label>Grandezze Predefinite:</label>
+      <div class="checkbox-group" id="labCheckboxContainer">
+        <label class="checkbox-item"><input type="checkbox" value="Frequenza (Hz)" checked> Frequenza (Hz)</label>
+        <label class="checkbox-item"><input type="checkbox" value="V_in (V)" checked> V_in (V)</label>
+        <label class="checkbox-item"><input type="checkbox" value="V/div in (V)"> V/div in (V)</label>
+        <label class="checkbox-item"><input type="checkbox" value="V_out (V)" checked> V_out (V)</label>
+        <label class="checkbox-item"><input type="checkbox" value="V/div out (V)"> V/div out (V)</label>  
+        <label class="checkbox-item"><input type="checkbox" value="Fase (deg)"> Fase (deg)</label>
+        <label class="checkbox-item"><input type="checkbox" value="Δt/div (s)"> Δt/div (s)</label>
+        <label class="checkbox-item"><input type="checkbox" value="Gain H (dB)"> Gain H (dB)</label>
+        <label class="checkbox-item"><input type="checkbox" value="Tensione DC (V)"> Tensione DC (V)</label>
+        <label class="checkbox-item"><input type="checkbox" value="Corrente (mA)"> Corrente (mA)</label>
+        <label class="checkbox-item"><input type="checkbox" value="Tempo (s)"> Tempo (s)</label>
+      </div>
+
+      <div class="add-custom-wrapper">
+        <input type="text" id="nuovaGrandezzaLab" placeholder="Aggiungi grandezza custom...">
+        <button type="button" class="btn-add" onclick="aggiungiGrandezzaCustom()">+ Aggiungi</button>
+      </div>
+    </div>
+
+    <!-- Sezione Generale (Input libero per intestazioni) -->
+    <div id="sectionGen" class="hidden">
+      <label for="customIntestazioni">Intestazioni Personalizzate (separate da virgola):</label>
+      <textarea id="customIntestazioni" placeholder="Es. Nome, Valore A, Valore B"></textarea>
+    </div>
+
+    <label for="colore">Colore Sfondo Intestazione:</label>
+    <input type="color" id="colore" value="#e8f0fe">
+
+    <div class="form-group">
+      <label>Numero di righe dati:</label>
+      <div class="row-selector-container">
+        <label class="row-box"><input type="radio" name="numRighe" value="10"><span>10</span></label>
+        <label class="row-box"><input type="radio" name="numRighe" value="15" checked><span>15</span></label>
+        <label class="row-box"><input type="radio" name="numRighe" value="20"><span>20</span></label>
+        <label class="row-box"><input type="radio" name="numRighe" value="30"><span>30</span></label>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="inviaDati()">Genera Tabella</button>
+
+    <script>
+      var currentMode = 'lab';
+
+      function setMode(mode) {
+        currentMode = mode;
+        var btnLab = document.getElementById('btnLab');
+        var btnGen = document.getElementById('btnGen');
+        var secLab = document.getElementById('sectionLab');
+        var secGen = document.getElementById('sectionGen');
+
+        if (mode === 'lab') {
+          btnLab.classList.add('active');
+          btnGen.classList.remove('active');
+          secLab.classList.remove('hidden');
+          secGen.classList.add('hidden');
+        } else {
+          btnGen.classList.add('active');
+          btnLab.classList.remove('active');
+          secGen.classList.remove('hidden');
+          secLab.classList.add('hidden');
+        }
+      }
+
+      function aggiungiGrandezzaCustom() {
+        var inputField = document.getElementById('nuovaGrandezzaLab');
+        var valore = inputField.value.trim();
+        
+        if (!valore) return;
+
+        var container = document.getElementById('labCheckboxContainer');
+        var label = document.createElement('label');
+        label.className = 'checkbox-item';
+        var input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = valore;
+        input.checked = true;
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(' ' + valore));
+        
+        container.appendChild(label);
+        inputField.value = '';
+        container.scrollTop = container.scrollHeight;
+      }
+
+      function inviaDati() {
+        var intestazioniScelte = [];
+
+        if (currentMode === 'lab') {
+          var checkboxes = document.querySelectorAll('#labCheckboxContainer input[type="checkbox"]:checked');
+          checkboxes.forEach(function(box) {
+            intestazioniScelte.push(box.value);
+          });
+          if (intestazioniScelte.length === 0) {
+            alert("Seleziona almeno una grandezza!");
+            return;
+          }
+        } else {
+          var textValue = document.getElementById('customIntestazioni').value.trim();
+          if (!textValue) {
+            alert("Inserisci almeno un'intestazione!");
+            return;
+          }
+          intestazioniScelte = textValue.split(',').map(function(item) {
+            return item.trim();
+          }).filter(function(item) {
+            return item.length > 0;
+          });
+        }
+
+        // "Note" viene aggiunta in automatico dalla tabella: niente nomi duplicati
+        var visti = { "Note": true };
+        for (var i = 0; i < intestazioniScelte.length; i++) {
+          if (visti[intestazioniScelte[i]]) {
+            alert('Intestazione duplicata: "' + intestazioniScelte[i] + '"');
+            return;
+          }
+          visti[intestazioniScelte[i]] = true;
+        }
+
+        var numRigheSelezionate = document.querySelector('input[name="numRighe"]:checked').value;
+
+        var dati = {
+          titolo: document.getElementById('titolo').value,
+          intestazioni: intestazioniScelte,
+          colore: document.getElementById('colore').value,
+          numRighe: parseInt(numRigheSelezionate)
+        };
+        
+        google.script.run
+          .withSuccessHandler(function() { 
+              google.script.host.close(); 
+          })
+          .withFailureHandler(function(err) { 
+              alert("Errore critico: " + err.message); 
+          })
+          .generaTabellaCustomDaDialogo(dati);
+      }
+    </script>
+  </body>
+</html>

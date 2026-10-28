@@ -1,0 +1,26 @@
+# Dipendenze Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# File di configurazione locale di Clasp
+# Scommenta la riga sotto se vuoi evitare di condividere lo scriptId univoco
+# .clasp.json
+
+# Credenziali e dati sensibili
+.env
+.env.local
+creds.json
+credentials.json
+
+# File di sistema e IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# File di build e dist (se usi TypeScript/Bundler tipo Webpack o Esbuild)
+dist/
+build/

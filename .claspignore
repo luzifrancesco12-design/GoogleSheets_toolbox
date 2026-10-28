@@ -1,0 +1,14 @@
+# Ignora configurazioni Git e repository
+.git/**
+.gitignore
+
+# Ignora dipendenze e configurazioni Node/IDE
+node_modules/**
+.vscode/**
+package.json
+package-lock.json
+
+# Ignora documentazione e test locali
+README.md
+**/*.test.js
+**/*.test.ts
