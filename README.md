@@ -2,7 +2,7 @@
 
 Codice Apps Script del foglio template **LabSS_template** per il laboratorio di Segnali e Sistemi: crea le tabelle di misura e calcola le incertezze degli strumenti.
 
-Il foglio fa parte di un flusso in due parti. Questa repo contiene la parte nel foglio; la parte in Python (lettura dei dati e grafici) è in [physics_toolbox](https://github.com/luzifrancesco12-design/physics_toolbox).
+Il foglio fa parte di un flusso in due parti. Questa repo contiene la parte nel foglio; la parte in Python (lettura dei dati e grafici) è in [physics_toolbox](https://github.com/luzifrancesco12-design/physics-toolbox).
 
 ---
 
