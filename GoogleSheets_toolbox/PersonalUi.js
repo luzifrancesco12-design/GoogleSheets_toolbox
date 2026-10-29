@@ -1,5 +1,9 @@
+/**
+ * @OnlyCurrentDoc
+ */
+
 function onOpen() {
-  var ui = SpreadsheetApp.getUi();
+var ui = SpreadsheetApp.getUi();
   
   // Primo menu: Gestione Tabelle
   ui.createMenu('Smart Table')
