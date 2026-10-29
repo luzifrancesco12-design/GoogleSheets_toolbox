@@ -76,7 +76,7 @@ function creaBloccoIncertezze() {
   // --- Intestazioni (riga 9) ---
   var HR = 9, DR = 10;
   var headers = ["Frequenza (Hz)", "V_in (V)", "V/div in (V)", "σ V_in (V)",
-                 "V_out (V)", "V/div out (V)", "σ V_out (V)", "Gain H (dB)", "σ Gain H (dB)"];
+                 "V_out (V)", "V/div out (V)", "Err V_out (V)", "Gain H (dB)", "Err Gain H (dB)"];
   dst.getRange(HR, c0, 1, nCols).setValues([headers])
      .setFontWeight("bold").setBackground("#e8f0fe")
      .setBorder(null, null, true, null, null, null, "#4A4A4A", SpreadsheetApp.BorderStyle.DASHED);
